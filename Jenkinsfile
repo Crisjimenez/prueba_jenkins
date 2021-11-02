@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('build sin test') { 
             steps {
-                nodejs(nodeJSInstallationName: 'nodejs') { 
+                nodejs(nodeJSInstallationName: 'nodejs15') { 
                     sh 'npm install'
                     sh 'npm rebuild'
                     sh 'npm run build --skip-test --if-present'
@@ -16,7 +16,7 @@ pipeline {
         stage('unitTest') { 
             steps {
             //unstash "ws"
-            nodejs(nodeJSInstallationName: 'nodejs') {
+            nodejs(nodeJSInstallationName: 'nodejs15') {
                 sh 'npm run test:coverage && cp coverage/lcov.info lcov.info || echo "Code coverage failed"'
                 archiveArtifacts(artifacts: 'coverage/**', onlyIfSuccessful: true)
                 }
@@ -26,7 +26,7 @@ pipeline {
 
         stage('deploy') {
             steps {
-                nodejs(nodeJSInstallationName: 'nodejs') {
+                nodejs(nodeJSInstallationName: 'nodejs15') {
                     withAWS(credentials: 'aws-credentials') { 
                         sh 'serverless deploy'
                     }
